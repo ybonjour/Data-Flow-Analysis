@@ -55,6 +55,9 @@ public class MainFrame extends JFrame implements ActionListener {
 	public MainFrame(){
 		super("Dataflow Analysis");
 		initializeStrategies();
+		
+		setIcon();
+		
 		Container con = this.getContentPane();
 		con.add(this.panel);
 		
@@ -101,6 +104,15 @@ public class MainFrame extends JFrame implements ActionListener {
 	    setVisible(true);
 	}
 	
+	public void updateOutput(String html, BufferedImage image){
+		this.image.setImage(image);
+		String htmlExpressions = html;
+		this.output.setText(htmlExpressions);
+		
+		pack();
+		repaint();
+	}
+	
 	private void setIcon(){
 		URL url = ClassLoader.getSystemResource("ch/yvu/dfa/ressources/icon.png");
 		Toolkit kit = Toolkit.getDefaultToolkit();
@@ -118,38 +130,9 @@ public class MainFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		//TODO: own thread
-		GraphViz graphViz = new GraphViz();
-		byte[] imageBytes = graphViz.getGraph(this.input.getText(), "png");
-		ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-		BufferedImage buffImage;
-		try {
-			buffImage = ImageIO.read(bais);
-		} catch (IOException e) {
-			throw new RuntimeException();
-		}
-		
-		this.image.setImage(buffImage);
-		
-		String htmlExpressions = runAnalysis();
-
-		this.output.setText(htmlExpressions);
-		
-		pack();
-		repaint();
-	}
-	
-	private String runAnalysis(){
-		SimpleDOTParser parser = new SimpleDOTParser(this.input.getText());
-		ControlflowGraph graph;
-		try{
-			graph = parser.parse();
-		} catch(FormatException e){
-			throw new RuntimeException(e);
-		}
-		
-		AnalysisStrategy selectedStrategy = this.strategies.get(this.strategyList.getSelectedItem());
-		DataFlowAnalysis analysis = new DataFlowAnalysis(graph, selectedStrategy);
-		return analysis.analyse();
+		Worker worker = new Worker(this, this.input.getText(), this.strategies.get(this.strategyList.getSelectedItem()));
+		Thread t = new Thread(worker);
+		t.start();
 	}
 	
 	private class ImagePanel extends Component{

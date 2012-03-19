@@ -40,7 +40,10 @@ public class SimpleDOTParser {
 				int nodeToId = Integer.parseInt(edgeMatcher.group(2));
 				createEdge(nodeFromId, nodeToId);
 			} else {
-				throw new FormatException();
+				//If format not recognize don't consider it for
+				//controlflow graph but don't throw an execption
+				//because only a subset of DOT language is supported
+				//(unrecognized tokens can still be valid DOT)
 			}
 		}
 		return this.graph;
@@ -80,14 +83,12 @@ public class SimpleDOTParser {
 	 * digraphgraphName{<node>}
 	 */
 	private static String extractEdgeInput(String input) throws FormatException{
-		String[] tokens = input.split("[{]");
-		if(tokens.length != 2) throw new FormatException();
+		Pattern blockPattern = Pattern.compile("[^\\{]*\\{([^\\}]*)\\}");
+		Matcher blockMatcher = blockPattern.matcher(input);
 		
-		String[] tokens2 = tokens[1].split("[}]");
+		if(!blockMatcher.find()) throw new FormatException();
 		
-		if(tokens2.length == 0) return "";
-		else if(tokens2.length == 1) return tokens2[0];
-		else throw new FormatException();
+		return blockMatcher.group(1);
 	}
 	
 	private Set<String> getFreeVariables(String input){

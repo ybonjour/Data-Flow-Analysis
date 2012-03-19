@@ -71,5 +71,4 @@ public class StronglyLiveVariableStrategy extends BackwardStrategy {
 			Set<String> expressions2) {
 		return expressions2;
 	}
-
 }

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.swing.SwingUtilities;
+
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.gui.MainFrame;
 import ch.yvu.dfa.parser.FormatException;
@@ -11,8 +13,6 @@ import ch.yvu.dfa.parser.SimpleDOTParser;
 import ch.yvu.dfa.analysis.*;
 
 public class Program {
-	private MainFrame mainFrame; 
-
 	public static void main(String[] args){
 		Program p = new Program();
 		//p.runWithGraphsFromFile(args);
@@ -20,7 +20,12 @@ public class Program {
 	}
 	
 	public void runGUI(){
-		this.mainFrame = new MainFrame();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				new MainFrame();
+			}
+		});
 	}
 	
 	public void runWithGraphsFromFile(String[] filePaths){

@@ -87,5 +87,19 @@ public class ExplorationalTests {
 		Assert.assertEquals("bla", matcher2.group(2));
 		
 		Assert.assertFalse(matcher3.find());
+	} 
+	
+	@Test
+	public void test_regex_block(){
+		String regex = "[^\\{]*\\{([^\\}]*)\\}";
+		String myBlock = "blabla{text}";
+		
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(myBlock);
+		
+		Assert.assertTrue(m.find());
+		Assert.assertEquals(1, m.groupCount());
+		Assert.assertEquals("text", m.group(1));
+		
 	}
 }
