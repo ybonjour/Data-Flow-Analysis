@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import ch.yvu.dfa.expressions.statements.Expression;
+import ch.yvu.dfa.expressions.statements.Variable;
+
 public class ControlflowGraph {
 
 	private Map<Integer, Node> nodes;
@@ -17,19 +20,19 @@ public class ControlflowGraph {
 		return this.nodes.get(id);
 	}
 	
-	public AssignmentNode createAssignmentNode(int id, String lhs, String rhs, Set<String> freeVariablesLhs, Set<String> freeVariablesRhs) throws Exception{
+	public AssignmentNode createAssignmentNode(int id, Variable lhs, Expression rhs) throws Exception{
 		if(this.nodes.containsKey(id)) throw new Exception("Node already exists");
 		
-		AssignmentNode node = new AssignmentNode(id, lhs, rhs, freeVariablesRhs);
+		AssignmentNode node = new AssignmentNode(id, lhs, rhs);
 		this.nodes.put(id, node);
 		
 		return node;		
 	}
 	
-	public ConditionalNode createConditionalNode(int id, String expression, Set<String> freeVariables) throws Exception {
+	public ConditionalNode createConditionalNode(int id, Expression expression) throws Exception {
 		if(this.nodes.containsKey(id)) throw new Exception("Node already exists");
 		
-		ConditionalNode node = new ConditionalNode(id, expression, freeVariables);
+		ConditionalNode node = new ConditionalNode(id, expression);
 		this.nodes.put(id, node);
 		return node;
 	}
@@ -50,14 +53,6 @@ public class ControlflowGraph {
 			nodeSet.add(node);
 		}
 		return nodeSet;
-	}
-	
-	public Set<String> allExpressions(){
-		Set<String> expressions = new HashSet<String>();
-		for(Node node : this.nodes.values()){
-			expressions.add(node.getExpression());
-		}
-		return expressions;
 	}
 	
 	public Set<Node> getParents(Node node){

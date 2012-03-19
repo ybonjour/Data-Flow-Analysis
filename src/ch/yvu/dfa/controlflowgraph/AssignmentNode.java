@@ -1,49 +1,59 @@
 package ch.yvu.dfa.controlflowgraph;
 
-import java.util.HashSet;
 import java.util.Set;
 import ch.yvu.dfa.analysis.AnalysisStrategy;
+import ch.yvu.dfa.expressions.analysis.AnalysisExpression;
+import ch.yvu.dfa.expressions.statements.Expression;
+import ch.yvu.dfa.expressions.statements.Variable;
 
 public class AssignmentNode extends Node {
 
-	private String lhs;
-	private String rhs;
-	private Set<String> freeVariablesRhs;
+	private Variable lhs;
+	private Expression rhs;
 	
-	public AssignmentNode(int id, String lhs, String rhs, Set<String> freeVariablesRhs){
+	public AssignmentNode(int id, Variable lhs, Expression rhs){
 		super(id);
 		this.lhs = lhs;
 		this.rhs = rhs;
-		this.freeVariablesRhs = freeVariablesRhs;
 	}
 	
-	public void kill(Set<String> outgoing, Set<String> incoming, AnalysisStrategy strategy){
+	@Override
+	public void kill(Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming, AnalysisStrategy strategy){
 		strategy.kill(this, outgoing, incoming);
 	}
 	
-	public void gen(Set<String> outgoing, Set<String> incoming, AnalysisStrategy strategy){
+	@Override
+	public void gen(Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming, AnalysisStrategy strategy){
 		strategy.gen(this, outgoing, incoming);
 	}
 
 	@Override
-	public String getExpression() {
-		return rhs;
+	public Expression getExpression() {
+		return this.rhs;
 	}
 
-	public String getLhs() {
+	public Variable getLhs() {
 		return lhs;
 	}
 
-	public String getRhs() {
+	public Expression getRhs() {
 		return rhs;
 	}
 
-	@Override
-	public String getStatement() {
-		return this.lhs + ":=" + this.rhs;
+	public boolean isComposedExpression(){
+		return this.rhs.isComposed();
 	}
 	
-	public Set<String> getFreeVariablesRhs(){
-		return new HashSet<String>(this.freeVariablesRhs);
+	@Override
+	public String getStatement() {
+		return this.lhs.getExpression() + ":=" + this.rhs.getExpression();
+	}
+	
+	public Set<Variable> getFreeVariablesRhs(){
+		return this.rhs.getFreeVariables();
+	}
+	
+	public boolean containsRightHandSideVariableInLeftHandSide(){
+		return this.rhs.containsVariable(this.lhs.getExpression());
 	}
 }

@@ -10,25 +10,26 @@ import java.util.TreeSet;
 
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
+import ch.yvu.dfa.expressions.analysis.AnalysisExpression;
 
 public class DataFlowAnalysis {
-	private Map<Node, Set<String>> incoming;
-	private Map<Node, Set<String>> outgoing;
+	private Map<Node, Set<AnalysisExpression>> incoming;
+	private Map<Node, Set<AnalysisExpression>> outgoing;
 	private ControlflowGraph graph;
 	private AnalysisStrategy strategy;
 	
 	
 	public DataFlowAnalysis(ControlflowGraph graph, AnalysisStrategy strategy){
-		this.incoming = new HashMap<Node, Set<String>>();
-		this.outgoing = new HashMap<Node, Set<String>>();
+		this.incoming = new HashMap<Node, Set<AnalysisExpression>>();
+		this.outgoing = new HashMap<Node, Set<AnalysisExpression>>();
 		this.graph = graph;
 		this.strategy = strategy;
 	}
 	
 	private void initializeAllOutgoing(){
-		Set<String> initSet = this.strategy.getInitializationOutgoing(this.graph);
+		Set<AnalysisExpression> initSet = this.strategy.getInitializationOutgoing(this.graph);
 		for(Node node : graph.getNodes()){
-			this.outgoing.put(node, new HashSet<String>(initSet));
+			this.outgoing.put(node, new HashSet<AnalysisExpression>(initSet));
 		}
 	}
 		
@@ -48,7 +49,7 @@ public class DataFlowAnalysis {
 		
 		Set<Node> changed = new HashSet<Node>(graph.getNodes());
 		Node initialNode = graph.getNode(initId);
-		Set<String> initialSetIncoming = this.strategy.getInitializationIncoming(this.graph);
+		Set<AnalysisExpression> initialSetIncoming = this.strategy.getInitializationIncoming(this.graph);
 		this.incoming.put(initialNode, initialSetIncoming);
 		initialNode.applyStatement(this.incoming.get(initialNode), this.outgoing.get(initialNode), this.strategy);
 		changed.remove(initialNode);
@@ -60,7 +61,7 @@ public class DataFlowAnalysis {
 			
 			calculateIncoming(currentNode);
 			
-			Set<String> oldOutgoing = new HashSet<String>(this.outgoing.get(currentNode));
+			Set<AnalysisExpression> oldOutgoing = new HashSet<AnalysisExpression>(this.outgoing.get(currentNode));
 			currentNode.applyStatement(this.incoming.get(currentNode), this.outgoing.get(currentNode), this.strategy);
 
 			if(!this.outgoing.get(currentNode).equals(oldOutgoing)){
@@ -73,20 +74,20 @@ public class DataFlowAnalysis {
 	
 	private void calculateIncoming(Node currentNode){
 		if(this.incoming.get(currentNode) == null){
-			this.incoming.put(currentNode, new HashSet<String>());
+			this.incoming.put(currentNode, new HashSet<AnalysisExpression>());
 		}
 		this.strategy.calculateIncoming(currentNode, this.incoming.get(currentNode), this.outgoing, this.graph);
 	}
 	
-	private String setToString(Set<String> set){
+	private String setToString(Set<AnalysisExpression> set){
 		String output = "{";
 		boolean first = true;
-		for(String s : set){
+		for(AnalysisExpression expr : set){
 			if(!first){
 				output += ", ";
 			}
 			
-			output += s;
+			output += expr.getExpression();
 			
 			first = false;
 		}

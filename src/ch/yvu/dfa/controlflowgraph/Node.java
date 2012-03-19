@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import ch.yvu.dfa.analysis.AnalysisStrategy;
+import ch.yvu.dfa.expressions.analysis.AnalysisExpression;
+import ch.yvu.dfa.expressions.statements.Expression;
 
 public abstract class Node implements Comparable<Node> {
 	private List<Node> children;
@@ -38,7 +40,7 @@ public abstract class Node implements Comparable<Node> {
 		return id;
 	}
 	
-	public void applyStatement(Set<String> incoming, Set<String> outgoing, AnalysisStrategy strategy){
+	public void applyStatement(Set<AnalysisExpression> incoming, Set<AnalysisExpression> outgoing, AnalysisStrategy strategy){
 		outgoing.clear();
 		outgoing.addAll(incoming);
 		kill(outgoing, incoming, strategy);
@@ -54,8 +56,8 @@ public abstract class Node implements Comparable<Node> {
 		return this.getId() - node.getId();
 	}
 	
-	public abstract String getExpression();
+	public abstract Expression getExpression();
 	public abstract String getStatement();
-	protected abstract void kill(Set<String> outgoing, Set<String> incoming,  AnalysisStrategy strategy);
-	protected abstract void gen(Set<String> outgoing, Set<String> incoming, AnalysisStrategy strategy);
+	protected abstract void kill(Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming,  AnalysisStrategy strategy);
+	protected abstract void gen(Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming, AnalysisStrategy strategy);
 }

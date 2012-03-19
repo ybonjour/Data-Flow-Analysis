@@ -1,4 +1,4 @@
-package ch.yvu.dfa.gui;
+package ch.yvu.dfa.main;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -10,8 +10,11 @@ import javax.swing.SwingUtilities;
 import ch.yvu.dfa.analysis.AnalysisStrategy;
 import ch.yvu.dfa.analysis.DataFlowAnalysis;
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
+import ch.yvu.dfa.gui.GraphViz;
+import ch.yvu.dfa.gui.MainFrame;
 import ch.yvu.dfa.parser.FormatException;
-import ch.yvu.dfa.parser.SimpleDOTParser;
+import ch.yvu.dfa.parser.dot.SimpleDOTParser;
+import ch.yvu.dfa.parser.expression.ExpressionParser;
 
 public class Worker implements Runnable{
 
@@ -39,7 +42,7 @@ public class Worker implements Runnable{
 	}
 	
 	private String runAnalysis(){
-		SimpleDOTParser parser = new SimpleDOTParser(this.input);
+		SimpleDOTParser parser = new SimpleDOTParser(this.input, new ExpressionParser());
 		ControlflowGraph graph;
 		try{
 			graph = parser.parse();

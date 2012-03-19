@@ -10,8 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
-import javax.imageio.ImageIO;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,22 +22,17 @@ import javax.swing.text.Document;
 import javax.swing.BoxLayout;
 
 import ch.yvu.dfa.analysis.AvailableExpressionStrategy;
-import ch.yvu.dfa.analysis.DataFlowAnalysis;
 import ch.yvu.dfa.analysis.LiveVariableStrategy;
 import ch.yvu.dfa.analysis.ReachingDefinitionsStrategy;
 import ch.yvu.dfa.analysis.AnalysisStrategy;
 import ch.yvu.dfa.analysis.StronglyLiveVariableStrategy;
-import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
-import ch.yvu.dfa.parser.FormatException;
-import ch.yvu.dfa.parser.SimpleDOTParser;
+
+import ch.yvu.dfa.main.Worker;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
-
 
 public class MainFrame extends JFrame implements ActionListener {
 

@@ -9,7 +9,8 @@ import javax.swing.SwingUtilities;
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.gui.MainFrame;
 import ch.yvu.dfa.parser.FormatException;
-import ch.yvu.dfa.parser.SimpleDOTParser;
+import ch.yvu.dfa.parser.dot.SimpleDOTParser;
+import ch.yvu.dfa.parser.expression.ExpressionParser;
 import ch.yvu.dfa.analysis.*;
 
 public class Program {
@@ -38,7 +39,7 @@ public class Program {
 				throw new RuntimeException(e);
 			}
 			
-			SimpleDOTParser parser = new SimpleDOTParser(input);
+			SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 			ControlflowGraph graph;
 			try{
 				graph = parser.parse();

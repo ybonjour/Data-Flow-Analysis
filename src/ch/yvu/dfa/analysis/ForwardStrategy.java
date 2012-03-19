@@ -6,6 +6,7 @@ import java.util.Set;
 
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
+import ch.yvu.dfa.expressions.analysis.AnalysisExpression;
 
 public abstract class ForwardStrategy implements AnalysisStrategy {
 
@@ -15,14 +16,14 @@ public abstract class ForwardStrategy implements AnalysisStrategy {
 	}
 	
 	@Override
-	public Set<String> selectEntry(Set<String> outgoing,
-			Set<String> incoming) {
+	public Set<AnalysisExpression> selectEntry(Set<AnalysisExpression> outgoing,
+			Set<AnalysisExpression> incoming) {
 		return incoming;
 	}
 
 	@Override
-	public Set<String> selectExit(Set<String> outgoing,
-			Set<String> incoming) {
+	public Set<AnalysisExpression> selectExit(Set<AnalysisExpression> outgoing,
+			Set<AnalysisExpression> incoming) {
 		return outgoing;
 	}
 

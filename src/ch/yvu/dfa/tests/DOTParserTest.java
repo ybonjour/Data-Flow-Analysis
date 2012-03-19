@@ -8,7 +8,8 @@ import ch.yvu.dfa.controlflowgraph.AssignmentNode;
 import ch.yvu.dfa.controlflowgraph.ConditionalNode;
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.parser.FormatException;
-import ch.yvu.dfa.parser.SimpleDOTParser;
+import ch.yvu.dfa.parser.dot.SimpleDOTParser;
+import ch.yvu.dfa.parser.expression.ExpressionParser;
 
 
 
@@ -18,7 +19,7 @@ public class DOTParserTest {
 	public void test_parse_empty(){
 		//Arrange
 		String input = "digraph Test{}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -36,7 +37,7 @@ public class DOTParserTest {
 	public void test_parse_assignment_node(){
 		//Arrange
 		String input = "digraph Test {1[label=\"x:=a+b\"]}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -51,18 +52,15 @@ public class DOTParserTest {
 		Assert.assertNotNull(graph.getNode(1));
 		Assert.assertTrue(graph.getNode(1) instanceof AssignmentNode);
 		AssignmentNode node = (AssignmentNode) graph.getNode(1);
-		Assert.assertEquals("x", node.getLhs());
-		Assert.assertEquals("a+b", node.getRhs());
-		Assert.assertEquals(2, node.getFreeVariablesRhs().size());
-		Assert.assertTrue(node.getFreeVariablesRhs().contains("a"));
-		Assert.assertTrue(node.getFreeVariablesRhs().contains("b"));
+		Assert.assertEquals("x", node.getLhs().getExpression());
+		Assert.assertEquals("a + b", node.getRhs().getExpression());
 	}
 	
 	@Test
 	public void test_parse_assignment_node_with_numbering(){
 		//Arrange
 		String input = "digraph Test {1[label=\"1: x:=a+b\"]}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -77,15 +75,15 @@ public class DOTParserTest {
 		Assert.assertNotNull(graph.getNode(1));
 		Assert.assertTrue(graph.getNode(1) instanceof AssignmentNode);
 		AssignmentNode node = (AssignmentNode) graph.getNode(1);
-		Assert.assertEquals("x", node.getLhs());
-		Assert.assertEquals("a+b", node.getRhs());
+		Assert.assertEquals("x", node.getLhs().getExpression());
+		Assert.assertEquals("a + b", node.getRhs().getExpression());
 	}
 	
 	@Test
 	public void test_parse_conditional_node(){
 		//Arrange
 		String input = "digraph Test {1[label=\"x<a+b\"]}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -100,18 +98,14 @@ public class DOTParserTest {
 		Assert.assertNotNull(graph.getNode(1));
 		Assert.assertTrue(graph.getNode(1) instanceof ConditionalNode);
 		ConditionalNode node = (ConditionalNode) graph.getNode(1);
-		Assert.assertEquals("x<a+b", node.getExpression());
-		Assert.assertEquals(3, node.getFreeVariables().size());
-		Assert.assertTrue(node.getFreeVariables().contains("x"));
-		Assert.assertTrue(node.getFreeVariables().contains("a"));
-		Assert.assertTrue(node.getFreeVariables().contains("b"));
+		Assert.assertEquals("x < a + b", node.getExpression().getExpression());
 	}
 	
 	@Test
 	public void test_parse_conditional_node_with_numbering(){
 		//Arrange
 		String input = "digraph Test {1[label=\"1: x<a+b\"]}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -126,14 +120,14 @@ public class DOTParserTest {
 		Assert.assertNotNull(graph.getNode(1));
 		Assert.assertTrue(graph.getNode(1) instanceof ConditionalNode);
 		ConditionalNode node = (ConditionalNode) graph.getNode(1);
-		Assert.assertEquals("x<a+b", node.getExpression());
+		Assert.assertEquals("x < a + b", node.getExpression().getExpression());
 	}
 	
 	@Test
 	public void test_parse_nodes_without_label(){
 		//Arrange
 		String input = "digraph Test{1->2;}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		try{
@@ -149,7 +143,7 @@ public class DOTParserTest {
 	public void test_parse_sequence(){
 		//Arrange
 		String input = "digraph Test {1[label=\"x:=a+b\"];2[label=\"y:=a*b\"];1->2;}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -171,7 +165,7 @@ public class DOTParserTest {
 	public void test_parse_branch(){
 		//Arrange
 		String input = "digraph Test {1[label=\"x<a+b\"];2[label=\"y:=a*b\"];3[label=\"y:=a+b\"];4[label=\"y:=2*y\"];1->2;2->4;1->3;3->4;}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;
@@ -204,7 +198,7 @@ public class DOTParserTest {
 	public void test_parse_loop(){
 		//Arrange
 		String input = "digraph Test {1[label=\"x<a+b\"];2[label=\"y:=a*b\"];3[label=\"y:=a+b\"];1->2;1->3;2->1;}";
-		SimpleDOTParser parser = new SimpleDOTParser(input);
+		SimpleDOTParser parser = new SimpleDOTParser(input, new ExpressionParser());
 		
 		//Act
 		ControlflowGraph graph;

@@ -1,12 +1,14 @@
-package ch.yvu.dfa.parser;
+package ch.yvu.dfa.parser.dot;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
+import ch.yvu.dfa.expressions.statements.Expression;
+import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.parser.FormatException;
+import ch.yvu.dfa.parser.expression.ExpressionParser;
 
 public class SimpleDOTParser {
 
@@ -14,10 +16,12 @@ public class SimpleDOTParser {
 	
 	private String input;	
 	private ControlflowGraph graph;
+	private ExpressionParser parser;
 	
-	public SimpleDOTParser(String input){
+	public SimpleDOTParser(String input, ExpressionParser parser){
 		this.input = input;
 		this.graph = new ControlflowGraph();
+		this.parser = parser;
 	}
 	
 	public ControlflowGraph parse() throws FormatException{
@@ -54,16 +58,19 @@ public class SimpleDOTParser {
 			String[] tokens = expression.split(ASSIGNMENT_OPERATOR);
 			if(tokens.length != 2) throw new FormatException();
 			try{
-				Set<String> freeVariablesLhs = getFreeVariables(tokens[0]);
-				Set<String> freeVariablesRhs = getFreeVariables(tokens[1]);
-				this.graph.createAssignmentNode(id, tokens[0], tokens[1], freeVariablesLhs, freeVariablesRhs);
+				Expression lhs = this.parser.parse(tokens[0]);
+				assert(lhs instanceof Variable);
+				
+				Expression rhs = this.parser.parse(tokens[1]);
+				
+				this.graph.createAssignmentNode(id, (Variable) lhs, rhs);
 			} catch(Exception e){
 				throw new FormatException(e);
 			}
 		} else {
 			try{
-				Set<String> freeVariables = getFreeVariables(expression);
-				this.graph.createConditionalNode(id, expression, freeVariables);
+				Expression expr = this.parser.parse(expression);
+				this.graph.createConditionalNode(id, expr);
 			} catch(Exception e){
 				throw new FormatException(e);
 			}
@@ -89,17 +96,5 @@ public class SimpleDOTParser {
 		if(!blockMatcher.find()) throw new FormatException();
 		
 		return blockMatcher.group(1);
-	}
-	
-	private Set<String> getFreeVariables(String input){
-		Set<String> freeVariables = new HashSet<String>(); 
-		Pattern fvPattern = Pattern.compile("(([a-zA-Z])([^a-zA-Z]+)?)");
-		Matcher matcher = fvPattern.matcher(input);
-		while(matcher.find()){
-			freeVariables.add(matcher.group(2));
-		}
-		
-		return freeVariables;
-	}
-	
+	}	
 }

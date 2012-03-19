@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import ch.yvu.dfa.controlflowgraph.ConditionalNode;
 import ch.yvu.dfa.controlflowgraph.Node;
+import ch.yvu.dfa.expressions.statements.*;
 
 public class NodeTest {
 
@@ -13,7 +14,7 @@ public class NodeTest {
 	
 	@Before
 	public void setUp(){
-		this.node = new ConditionalNode(1, "a==b", null);;
+			this.node = new ConditionalNode(1, new Operation(new Variable("a"), new Variable("b"), "=="));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -24,7 +25,7 @@ public class NodeTest {
 	@Test
 	public void test_addChild_non_existing_child(){
 		//Arrange
-		ConditionalNode child = new ConditionalNode(2, "a==b", null);
+		ConditionalNode child = new ConditionalNode(2, new Operation(new Variable("a"), new Variable("b"), "=="));
 		
 		//Act
 		this.node.addChild(child);
@@ -36,7 +37,7 @@ public class NodeTest {
 	@Test
 	public void test_addChild_existing_child(){
 		//Arrange
-		ConditionalNode child = new ConditionalNode(2, "a==b", null);
+		ConditionalNode child = new ConditionalNode(2,new Operation(new Variable("a"), new Variable("b"), "=="));
 		this.node.addChild(child);
 		
 		//Act
