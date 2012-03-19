@@ -1,0 +1,5 @@
+digraph Test{
+1[label="x:=a+b"];
+2[label="y:=a*b"];
+1->2;
+}

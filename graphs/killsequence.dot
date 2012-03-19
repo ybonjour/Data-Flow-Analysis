@@ -1,0 +1,7 @@
+digraph KillSequence{
+	1[label="x:=a+b"];
+	2[label="a:=b*x"];
+	3[label="x:=x+1"];
+	
+	1->2;
+}

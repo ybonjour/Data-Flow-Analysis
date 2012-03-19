@@ -1,0 +1,25 @@
+digraph StronglyLiveTest{
+	1[label="x:=5"];
+	2[label="x:=x"];
+	3[label="x:=1"];
+
+	1->2;
+	2->3;
+}
+
+digraph StronglyLiveTest{
+	1[label="x:=5"];
+	2[label="a:=x"];
+	3[label="a==x"];
+	4[label="b:=c"];
+	5[label="c:=b"];
+	6[label="d:=c"];
+
+	1->2;
+	2->3;
+	3->4;
+	4->6;
+	3->5;
+	5->6;
+	
+}

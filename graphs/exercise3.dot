@@ -1,0 +1,20 @@
+digraph Assignment1{
+	1[label="a:=0"];
+	2[label="x:=a+b"];
+	3[label="x>a"];
+	4[label="a==0"];
+	5[label="z:=a*b"];
+	6[label="x:=x-1"];
+	7[label="x:=x"];
+	8[label="a:=b+a"];
+	
+	1->2;
+	2->3;
+	3->4;
+	3->8;
+	4->5;
+	5->6;
+	6->3;
+	4->7;
+	7->3;
+}
