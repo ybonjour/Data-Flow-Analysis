@@ -1,8 +1,11 @@
 package ch.yvu.dfa.main;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -31,8 +34,19 @@ public class Worker implements Runnable{
 	
 	@Override
 	public void run() {
-		final String html = runAnalysis();
-		final BufferedImage image = createImage();
+		final String html;
+		final BufferedImage image;
+		try{
+			html = runAnalysis();
+			image = createImage();
+		}catch(FormatException e){
+			invokeErrorMessage("Syntax to describe graph not recognized. Use DOT Syntax.");
+			return;
+		} catch(IOException e){
+			invokeErrorMessage("A problem occured while generationg the graph.");
+			return;
+		}
+
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
@@ -41,30 +55,39 @@ public class Worker implements Runnable{
 		});
 	}
 	
-	private String runAnalysis(){
+	private void invokeErrorMessage(final String message){
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				frame.showErrorMessage(message);
+				
+			}
+		});
+	}
+	
+	private String runAnalysis() throws FormatException{
 		SimpleDOTParser parser = new SimpleDOTParser(this.input, new ExpressionParser());
-		ControlflowGraph graph;
-		try{
-			graph = parser.parse();
-		} catch(FormatException e){
-			throw new RuntimeException(e);
-		}
-
+		ControlflowGraph graph = parser.parse();
 		DataFlowAnalysis analysis = new DataFlowAnalysis(graph, this.strategy);
 		return analysis.analyse();
 	}
 	
-	private BufferedImage createImage(){
-		GraphViz graphViz = new GraphViz();
-		byte[] imageBytes = graphViz.getGraph(this.input, "png");
-		ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-		BufferedImage buffImage;
+	private BufferedImage createImage() throws IOException{
+		Properties properties = new Properties();
 		try {
-			buffImage = ImageIO.read(bais);
-		} catch (IOException e) {
-			throw new RuntimeException();
+			properties.load(new BufferedInputStream(new FileInputStream(Program.GRAPHVIZ_PROPERTIES_FILE)));
+		} catch (IOException e){
+			throw e;
 		}
 		
-		return buffImage;
+		String dotBinary = properties.getProperty(Program.GRAPHVIZ_PROPERTY_DOTBIN);
+		String tempDir = properties.getProperty(Program.GRAPHVIZ_PROPERTY_TMPDIR);
+		
+		GraphViz graphViz = new GraphViz(dotBinary, tempDir);
+		byte[] imageBytes = graphViz.getGraph(this.input, "png");
+		if(imageBytes == null) throw new IOException();
+		ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+		return ImageIO.read(bais);
 	}
 }

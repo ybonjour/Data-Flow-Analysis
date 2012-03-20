@@ -72,13 +72,13 @@ public class GraphViz
     * The dir. where temporary files will be created.
     */
    //private static String TEMP_DIR = "/tmp";	// Linux
-   private static String TEMP_DIR = "c:/temp";	// Windows
+   private String tmpDir = "c:/temp";	// Windows
 
    /**
     * Where is your dot program located? It will be called externally.
     */
    //private static String DOT = "/usr/bin/dot";	// Linux
-   private static String DOT = "C:/Program Files (x86)/Graphviz 2.28/bin/dot.exe";	// Windows
+   private String dotBinary = "C:/Program Files (x86)/Graphviz 2.28/bin/dot.exe";	// Windows
 
    /**
     * The source of the graph written in dot language.
@@ -89,7 +89,9 @@ public class GraphViz
     * Constructor: creates a new GraphViz object that will contain
     * a graph.
     */
-   public GraphViz() {
+   public GraphViz(String dotBinary, String tempDir) {
+	   this.tmpDir = tempDir;
+	   this.dotBinary = dotBinary;
    }
 
    /**
@@ -186,11 +188,11 @@ public class GraphViz
       byte[] img_stream = null;
 
       try {
-         img = File.createTempFile("graph_", "."+type, new File(GraphViz.TEMP_DIR));
+         img = File.createTempFile("graph_", "."+type, new File(this.tmpDir));
          Runtime rt = Runtime.getRuntime();
          
          // patch by Mike Chenault
-         String[] args = {DOT, "-T"+type, dot.getAbsolutePath(), "-o", img.getAbsolutePath()};
+         String[] args = {this.dotBinary, "-T"+type, dot.getAbsolutePath(), "-o", img.getAbsolutePath()};
          Process p = rt.exec(args);
          
          p.waitFor();
@@ -205,7 +207,7 @@ public class GraphViz
             System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
       }
       catch (java.io.IOException ioe) {
-         System.err.println("Error:    in I/O processing of tempfile in dir " + GraphViz.TEMP_DIR+"\n");
+         System.err.println("Error:    in I/O processing of tempfile in dir " + this.tmpDir+"\n");
          System.err.println("       or in calling external command");
          ioe.printStackTrace();
       }
@@ -227,7 +229,7 @@ public class GraphViz
    {
       File temp;
       try {
-         temp = File.createTempFile("graph_", ".dot.tmp", new File(GraphViz.TEMP_DIR));
+         temp = File.createTempFile("graph_", ".dot.tmp", new File(this.tmpDir));
          FileWriter fout = new FileWriter(temp);
          fout.write(str);
          fout.close();

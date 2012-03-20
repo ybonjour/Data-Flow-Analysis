@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
@@ -104,6 +105,10 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		pack();
 		repaint();
+	}
+	
+	public void showErrorMessage(String message){
+		JOptionPane.showMessageDialog(this, message);
 	}
 	
 	private void setIcon(){

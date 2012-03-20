@@ -13,6 +13,8 @@ public class ExpressionParser {
 	
 	public Expression parse(String input) throws FormatException{
 		String trimmedInput = input.replaceAll("\\s","");
+		//Don't consider brackets
+		trimmedInput = removeBrackets(trimmedInput);
 		
 		Pattern composedExpressionPattern = Pattern.compile("([a-zA-Z0-9]+)([^a-zA-Z0-9]{1,2})(.+)");
 		Matcher composedExpressionMatcher = composedExpressionPattern.matcher(trimmedInput);
@@ -38,6 +40,12 @@ public class ExpressionParser {
 		}
 	}
 	
+	private String removeBrackets(String trimmedInput) {
+		trimmedInput = trimmedInput.replaceAll("\\(", "");
+		trimmedInput = trimmedInput.replaceAll("\\)", "");
+		return trimmedInput;
+	}
+
 	private Expression createLeafExpression(String expression) throws FormatException{
 		if(isVariable(expression)){
 			return new Variable(expression);
