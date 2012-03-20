@@ -3,10 +3,10 @@ package ch.yvu.dfa.parser.expression;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.yvu.dfa.expressions.statements.Expression;
-import ch.yvu.dfa.expressions.statements.Number;
-import ch.yvu.dfa.expressions.statements.Operation;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Number;
+import ch.yvu.dfa.expressions.Operation;
+import ch.yvu.dfa.expressions.Variable;
 import ch.yvu.dfa.parser.FormatException;
 
 public class ExpressionParser {

@@ -5,10 +5,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.yvu.dfa.expressions.statements.Expression;
-import ch.yvu.dfa.expressions.statements.Number;
-import ch.yvu.dfa.expressions.statements.Operation;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Number;
+import ch.yvu.dfa.expressions.Operation;
+import ch.yvu.dfa.expressions.Variable;
 import ch.yvu.dfa.parser.FormatException;
 import ch.yvu.dfa.parser.expression.ExpressionParser;
 

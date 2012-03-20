@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ch.yvu.dfa.controlflowgraph.ConditionalNode;
 import ch.yvu.dfa.controlflowgraph.Node;
-import ch.yvu.dfa.expressions.statements.*;
+import ch.yvu.dfa.expressions.*;
 
 public class NodeTest {
 

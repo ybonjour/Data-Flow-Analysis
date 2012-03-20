@@ -6,20 +6,33 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ch.yvu.dfa.expressions.statements.Expression;
-import ch.yvu.dfa.expressions.statements.Number;
-import ch.yvu.dfa.expressions.statements.Operation;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Number;
+import ch.yvu.dfa.expressions.Operation;
+import ch.yvu.dfa.expressions.Variable;
 
 public class ExpressionNodeTest {
 
 	@Test
 	public void test_containsVariable_variable(){
 		//Arrange
-		Expression node = new Variable("a");
+		Variable a = new Variable("a");
 		
 		//Act
-		boolean contains = node.containsVariable("a");
+		boolean contains = a.containsVariable(a);
+		
+		//Assert
+		Assert.assertTrue(contains);
+	}
+	
+	@Test
+	public void test_containsVariable_different_variables_same_mane(){
+		//Arrange
+		Variable a1 = new Variable("a");
+		Variable a2 = new Variable("a");
+		
+		//Act
+		boolean contains = a1.containsVariable(a2);
 		
 		//Assert
 		Assert.assertTrue(contains);
@@ -28,22 +41,10 @@ public class ExpressionNodeTest {
 	@Test
 	public void test_containsVariable_false(){
 		//Arrange
-		Expression node = new Variable("a");
+		Variable a = new Variable("a");
 		
 		//Act
-		boolean contains = node.containsVariable("b");
-		
-		//Assert
-		Assert.assertFalse(contains);
-	}
-	
-	@Test
-	public void test_containsVariable_numer(){
-		//Arrange
-		Expression node = new Number(0);
-		
-		//Act
-		boolean contains = node.containsVariable("0");
+		boolean contains = a.containsVariable(new Variable("b"));
 		
 		//Assert
 		Assert.assertFalse(contains);
@@ -55,7 +56,7 @@ public class ExpressionNodeTest {
 		Expression node = new Operation(new Variable("a"), new Number(0), null);
 		
 		//Act
-		boolean contains = node.containsVariable("a");
+		boolean contains = node.containsVariable(new Variable("a"));
 		
 		//Assert
 		Assert.assertTrue(contains);
@@ -67,7 +68,7 @@ public class ExpressionNodeTest {
 		Expression node = new Operation(new Number(0), new Variable("a"), null);
 		
 		//Act
-		boolean contains = node.containsVariable("a");
+		boolean contains = node.containsVariable(new Variable("a"));
 		
 		//Assert
 		Assert.assertTrue(contains);
@@ -79,7 +80,7 @@ public class ExpressionNodeTest {
 		Expression node = new Operation(new Variable("b"), new Variable("a"), null);
 		
 		//Act
-		boolean contains = node.containsVariable("c");
+		boolean contains = node.containsVariable(new Variable("c"));
 		
 		//Assert
 		Assert.assertFalse(contains);

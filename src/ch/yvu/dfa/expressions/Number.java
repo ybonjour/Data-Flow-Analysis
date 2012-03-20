@@ -1,10 +1,10 @@
-package ch.yvu.dfa.expressions.statements;
+package ch.yvu.dfa.expressions;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class Number implements Expression {
+public class Number extends Expression {
 
 	private int number;
 	
@@ -13,7 +13,7 @@ public class Number implements Expression {
 	}
 	
 	@Override
-	public boolean containsVariable(String name) {
+	public boolean containsVariable(Variable name) {
 		return false;
 	}
 

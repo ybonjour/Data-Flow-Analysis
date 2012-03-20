@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import ch.yvu.dfa.expressions.statements.Expression;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Variable;
 
 public class ControlflowGraph {
 

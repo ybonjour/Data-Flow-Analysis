@@ -1,9 +1,9 @@
-package ch.yvu.dfa.expressions.statements;
+package ch.yvu.dfa.expressions;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class Operation implements Expression {
+public class Operation extends Expression {
 
 	private Expression leftOperand;
 	private Expression rightOperand;
@@ -15,8 +15,8 @@ public class Operation implements Expression {
 		this.operation = operation;
 	}
 	
-	public boolean containsVariable(String name){		
-		return this.leftOperand.containsVariable(name) || this.rightOperand.containsVariable(name);
+	public boolean containsVariable(Variable variable){		
+		return this.leftOperand.containsVariable(variable) || this.rightOperand.containsVariable(variable);
 	}
 
 	@Override

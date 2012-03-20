@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
-import ch.yvu.dfa.expressions.statements.Expression;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Variable;
 import ch.yvu.dfa.parser.FormatException;
 import ch.yvu.dfa.parser.expression.ExpressionParser;
 

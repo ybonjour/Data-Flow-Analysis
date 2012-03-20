@@ -9,50 +9,49 @@ import ch.yvu.dfa.controlflowgraph.AssignmentNode;
 import ch.yvu.dfa.controlflowgraph.ConditionalNode;
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
-import ch.yvu.dfa.expressions.analysis.AnalysisExpression;
-import ch.yvu.dfa.expressions.analysis.AnalysisNodeExpression;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Variable;
 
 public class LiveVariableStrategy extends BackwardStrategy {
 
 	@Override
-	public Set<AnalysisExpression> getInitializationOutgoing(ControlflowGraph graph) {
-		return new HashSet<AnalysisExpression>();
+	public Set<Expression> getInitializationOutgoing(ControlflowGraph graph) {
+		return new HashSet<Expression>();
 	}
 
 	@Override
-	public Set<AnalysisExpression> getInitializationIncoming(ControlflowGraph graph) {
-		return new HashSet<AnalysisExpression>();
+	public Set<Expression> getInitializationIncoming(ControlflowGraph graph) {
+		return new HashSet<Expression>();
 	}
 
 	@Override
-	public void kill(AssignmentNode node, Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming) {
+	public void kill(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		outgoing.remove(node.getLhs());
 	}
 
 	@Override
-	public void kill(ConditionalNode node, Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming) {
+	public void kill(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		//nothing to kill
 		
 	}
 
 	@Override
-	public void gen(AssignmentNode node, Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming) {
+	public void gen(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		for(Variable freeVariable : node.getFreeVariablesRhs()){
-			outgoing.add(new AnalysisNodeExpression(freeVariable));
+			outgoing.add(freeVariable);
 		}
 	}
 
 	@Override
-	public void gen(ConditionalNode node, Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming) {
+	public void gen(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		for(Variable freeVariable : node.getFreeVariables()){
-			outgoing.add(new AnalysisNodeExpression(freeVariable));
+			outgoing.add(freeVariable);
 		}
 	}
 
 	@Override
-	public void calculateIncoming(Node node, Set<AnalysisExpression> incoming,
-			Map<Node, Set<AnalysisExpression>> outgoing, ControlflowGraph graph) {
+	public void calculateIncoming(Node node, Set<Expression> incoming,
+			Map<Node, Set<Expression>> outgoing, ControlflowGraph graph) {
 		//Start with empty set
 		incoming.clear();
 		Iterator<Node> itChildren = node.childrenIterator();

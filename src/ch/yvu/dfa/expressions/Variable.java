@@ -1,9 +1,9 @@
-package ch.yvu.dfa.expressions.statements;
+package ch.yvu.dfa.expressions;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class Variable implements Expression {
+public class Variable extends Expression {
 
 	private String name;
 	
@@ -12,8 +12,8 @@ public class Variable implements Expression {
 	}
 
 	@Override
-	public boolean containsVariable(String name) {
-		return this.name.compareTo(name) == 0;
+	public boolean containsVariable(Variable variable) {
+		return this.name.compareTo(variable.name) == 0;
 	}
 
 	@Override

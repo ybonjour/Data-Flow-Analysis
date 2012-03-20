@@ -1,10 +1,10 @@
 package ch.yvu.dfa.controlflowgraph;
 
 import java.util.Set;
+
 import ch.yvu.dfa.analysis.AnalysisStrategy;
-import ch.yvu.dfa.expressions.analysis.AnalysisExpression;
-import ch.yvu.dfa.expressions.statements.Expression;
-import ch.yvu.dfa.expressions.statements.Variable;
+import ch.yvu.dfa.expressions.Expression;
+import ch.yvu.dfa.expressions.Variable;
 
 public class ConditionalNode extends Node{
 
@@ -16,12 +16,12 @@ public class ConditionalNode extends Node{
 	}
 	
 	@Override
-	public void kill(Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming, AnalysisStrategy strategy){
+	public void kill(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy){
 		strategy.kill(this, outgoing, incoming);
 	}
 	
 	@Override
-	public void gen(Set<AnalysisExpression> outgoing, Set<AnalysisExpression> incoming, AnalysisStrategy strategy){
+	public void gen(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy){
 		strategy.gen(this, outgoing, incoming);
 	}
 
