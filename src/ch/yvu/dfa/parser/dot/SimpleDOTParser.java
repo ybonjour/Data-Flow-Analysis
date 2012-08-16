@@ -14,6 +14,12 @@ public class SimpleDOTParser {
 
 	private final static String ASSIGNMENT_OPERATOR = ":=";
 	
+	private final static String GREATER_THAN = ">";
+	private final static String GREATER_OR_EQUAL_THAN = ">=";
+	private final static String SMALLER_THAN = "<";
+	private final static String SMALLER_OR_EQUAL_THAN = "<=";
+	private final static String EQUAL = "==";
+	
 	private String input;	
 	private ControlflowGraph graph;
 	private ExpressionParser parser;
@@ -29,8 +35,9 @@ public class SimpleDOTParser {
 		String edgeInput = extractEdgeInput(trimmedInput);
 		
 		StringTokenizer tokens = new StringTokenizer(edgeInput, ";");
-		Pattern edgePattern = Pattern.compile("([0-9]+)->([0-9]+)");
-		Pattern nodePattern = Pattern.compile("([0-9]+)\\[label=\"([0-9]+:)?([^\"]+)\"\\]");
+		Pattern edgePattern = Pattern.compile("^([0-9]+)->([0-9]+)(\\[label=\"(true|false)\"\\])?");
+		
+		Pattern nodePattern = Pattern.compile("^([0-9]+)\\[label=\"([0-9]+:)?([^\"]+)\"\\]");
 		while(tokens.hasMoreElements()){
 			String token = tokens.nextToken();
 			Matcher edgeMatcher = edgePattern.matcher(token);
@@ -55,25 +62,58 @@ public class SimpleDOTParser {
 	
 	private void createNode(int id, String expression) throws FormatException {
 		if(expression.contains(ASSIGNMENT_OPERATOR)){
-			String[] tokens = expression.split(ASSIGNMENT_OPERATOR);
-			if(tokens.length != 2) throw new FormatException();
-			try{
-				Expression lhs = this.parser.parse(tokens[0]);
-				assert(lhs instanceof Variable);
-				
-				Expression rhs = this.parser.parse(tokens[1]);
-				
-				this.graph.createAssignmentNode(id, (Variable) lhs, rhs);
-			} catch(Exception e){
-				throw new FormatException(e);
-			}
+			createAssignmentNode(id, expression);
 		} else {
-			try{
-				Expression expr = this.parser.parse(expression);
-				this.graph.createConditionalNode(id, expr);
-			} catch(Exception e){
-				throw new FormatException(e);
-			}
+			createConditionalNode(id, expression);
+		}
+	}
+	
+	private void createConditionalNode(int id, String conditionalExpression) throws FormatException{
+		//Order of if...else if... is important
+		//as SMALLER ("<") is a substring of SMALLER_OR_EQUAL ("<=")
+		
+		String[] tokens;
+		String operation;
+		if(conditionalExpression.contains(SMALLER_OR_EQUAL_THAN)){
+			 tokens = conditionalExpression.split(SMALLER_OR_EQUAL_THAN);
+			 operation = SMALLER_OR_EQUAL_THAN;
+		} else if(conditionalExpression.contains(GREATER_OR_EQUAL_THAN)){
+			tokens = conditionalExpression.split(GREATER_OR_EQUAL_THAN);
+			operation = GREATER_OR_EQUAL_THAN;
+		} else if(conditionalExpression.contains(SMALLER_THAN)){
+			tokens = conditionalExpression.split(SMALLER_THAN);
+			operation = SMALLER_THAN;
+		} else if(conditionalExpression.contains(GREATER_THAN)){
+			tokens = conditionalExpression.split(GREATER_THAN);
+			operation = GREATER_THAN;
+		}  else if(conditionalExpression.contains(EQUAL)){
+			tokens = conditionalExpression.split(EQUAL);
+			operation = EQUAL;
+		} else {
+			throw new FormatException();
+		}
+		if(tokens.length != 2) throw new FormatException();
+		Expression lhs = this.parser.parse(tokens[0]);
+		Expression rhs = this.parser.parse(tokens[1]);
+		try{
+			this.graph.createConditionalNode(id, lhs, rhs, operation);
+		}catch(Exception e){
+			throw new FormatException(e);
+		}
+	}
+	
+	private void createAssignmentNode(int id, String assignmentExpression) throws FormatException{
+		String[] tokens = assignmentExpression.split(ASSIGNMENT_OPERATOR);
+		if(tokens.length != 2) throw new FormatException();
+		try{
+			Expression lhs = this.parser.parse(tokens[0]);
+			assert(lhs instanceof Variable);
+			
+			Expression rhs = this.parser.parse(tokens[1]);
+			
+			this.graph.createAssignmentNode(id, (Variable) lhs, rhs);
+		} catch(Exception e){
+			throw new FormatException(e);
 		}
 	}
 

@@ -1,41 +1,47 @@
 package ch.yvu.dfa.controlflowgraph;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import ch.yvu.dfa.analysis.AnalysisStrategy;
 import ch.yvu.dfa.expressions.Expression;
 import ch.yvu.dfa.expressions.Variable;
+import ch.yvu.dfa.expressions.Operation;
 
 public class ConditionalNode extends Node{
 
-	private Expression condition;
+	private Expression rhs;
+	private Expression lhs;
+	private String operator;
 	
-	public ConditionalNode(int id, Expression condition){
+	
+	public ConditionalNode(int id, Expression lhs, Expression rhs, String operator){
 		super(id);
-		this.condition = condition;
+		this.rhs = rhs;
+		this.lhs = lhs;
+		this.operator = operator;
 	}
 	
 	@Override
-	public void kill(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy){
-		strategy.kill(this, outgoing, incoming);
-	}
-	
-	@Override
-	public void gen(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy){
-		strategy.gen(this, outgoing, incoming);
+	public void applyStatement(Set<Expression> incoming,
+			Set<Expression> outgoing, AnalysisStrategy strategy) {
+		strategy.applyStatement(this, incoming, outgoing);
 	}
 
 	@Override
 	public Expression getExpression() {
-		return condition;
+		return new Operation(lhs, rhs, this.operator);
 	}
 
 	@Override
 	public String getStatement() {
-		return condition.getExpression();
+		return lhs.getExpression() + " " + operator + " " + rhs.getExpression();
 	}
 	
 	public Set<Variable> getFreeVariables(){
-		return this.condition.getFreeVariables();
+		Set<Variable> freeVariables = new HashSet<Variable>();
+		freeVariables.addAll(this.rhs.getFreeVariables());
+		freeVariables.addAll(this.lhs.getFreeVariables());
+		return freeVariables;
 	}
 }

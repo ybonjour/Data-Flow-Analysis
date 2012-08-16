@@ -8,8 +8,8 @@ import ch.yvu.dfa.controlflowgraph.AssignmentNode;
 import ch.yvu.dfa.controlflowgraph.ConditionalNode;
 import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
-import ch.yvu.dfa.expressions.Expression;
 import ch.yvu.dfa.expressions.LabeledVariable;
+import ch.yvu.dfa.expressions.Expression;
 
 public class ReachingDefinitionsStrategy extends ForwardStrategy {
 	
@@ -23,7 +23,34 @@ public class ReachingDefinitionsStrategy extends ForwardStrategy {
 	}
 
 	@Override
-	public void kill(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+	public void calculateIncoming(Node node, Set<Expression> incoming,
+			Map<Node, Set<Expression>> outgoings, ControlflowGraph graph) {
+		incoming.clear();
+		Set<Node> parents = graph.getParents(node);
+		for (Node parent : parents) {
+			incoming.addAll(outgoings.get(parent));
+		}
+	}
+	
+	@Override
+	public void applyStatement(AssignmentNode node, Set<Expression> incoming,
+			Set<Expression> outgoing) {
+		outgoing.clear();
+		outgoing.addAll(incoming);
+		kill(node, outgoing, incoming);
+		gen(node, outgoing, incoming);
+	}
+	
+	@Override
+	public void applyStatement(ConditionalNode node, Set<Expression> incoming,
+			Set<Expression> outgoing) {
+		outgoing.clear();
+		outgoing.addAll(incoming);
+		kill(node, outgoing, incoming);
+		gen(node, outgoing, incoming);	
+	}
+	
+	private void kill(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		Set<Expression> killExpressions = new HashSet<Expression>();
 		for (Expression expression : outgoing) {
 			if(expression.containsVariable(node.getLhs())){
@@ -33,28 +60,15 @@ public class ReachingDefinitionsStrategy extends ForwardStrategy {
 		outgoing.removeAll(killExpressions);
 	}
 
-	@Override
-	public void kill(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+	private void kill(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		//Nothing to kill
 	}
 
-	@Override
-	public void gen(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+	private void gen(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		outgoing.add(new LabeledVariable(node.getId(), node.getLhs()));
 	}
 
-	@Override
-	public void gen(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+	private void gen(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
 		//Nothing to generate
-	}
-
-	@Override
-	public void calculateIncoming(Node node, Set<Expression> incoming,
-			Map<Node, Set<Expression>> outgoings, ControlflowGraph graph) {
-		incoming.clear();
-		Set<Node> parents = graph.getParents(node);
-		for (Node parent : parents) {
-			incoming.addAll(outgoings.get(parent));
-		}
 	}
 }

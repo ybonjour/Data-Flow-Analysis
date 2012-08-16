@@ -3,6 +3,8 @@ package ch.yvu.dfa.expressions;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.yvu.dfa.analysis.State;
+
 public class Operation extends Expression {
 
 	private Expression leftOperand;
@@ -35,5 +37,35 @@ public class Operation extends Expression {
 	@Override
 	public boolean isComposed() {
 		return true;
+	}
+
+	@Override
+	public NumberTop evaluate(State state){		
+		NumberTop rightNumber = this.rightOperand.evaluate(state);
+		NumberTop leftNumber =	this.leftOperand.evaluate(state);
+		
+		if(rightNumber == null || leftNumber == null){
+			return null;
+		}
+		
+		if(this.operation.equals("+")){
+			return rightNumber.add(leftNumber);
+		} else if(this.operation.equals("-")){
+			return rightNumber.subtract(leftNumber);
+		} else if(this.operation.equals("*")){
+			return rightNumber.multiply(leftNumber);
+		} else if(this.operation.equals(">")){
+			return rightNumber.greaterThan(leftNumber);
+		} else if(this.operation.equals(">=")){
+			return rightNumber.greaterOrEqualThan(leftNumber);
+		} else if(this.operation.equals("<")){
+			return rightNumber.smallerThan(leftNumber);
+		} else if(this.operation.equals("<=")){
+			return rightNumber.smallerOrEqualThan(leftNumber);
+		} else if(this.operation.equals("==")){
+			return rightNumber.equalTo(leftNumber);
+		}
+		
+		throw new RuntimeException();
 	}
 }

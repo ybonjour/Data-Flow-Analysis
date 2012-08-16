@@ -3,6 +3,8 @@ package ch.yvu.dfa.expressions;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.yvu.dfa.analysis.State;
+
 public class Variable extends Expression {
 
 	private String name;
@@ -31,5 +33,11 @@ public class Variable extends Expression {
 	@Override
 	public boolean isComposed() {
 		return false;
+	}
+
+	@Override
+	public NumberTop evaluate(State state) {
+		NumberTop nt = state.getValue(this);
+		return nt;
 	}
 }

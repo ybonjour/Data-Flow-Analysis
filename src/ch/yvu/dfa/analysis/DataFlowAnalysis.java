@@ -12,6 +12,8 @@ import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
 import ch.yvu.dfa.expressions.Expression;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 public class DataFlowAnalysis {
 	private Map<Node, Set<Expression>> incoming;
 	private Map<Node, Set<Expression>> outgoing;
@@ -51,7 +53,7 @@ public class DataFlowAnalysis {
 		Node initialNode = graph.getNode(initId);
 		Set<Expression> initialSetIncoming = this.strategy.getInitializationIncoming(this.graph);
 		this.incoming.put(initialNode, initialSetIncoming);
-		initialNode.applyStatement(this.incoming.get(initialNode), this.outgoing.get(initialNode), this.strategy);
+		this.strategy.applyStatement(initialNode, this.incoming.get(initialNode), this.outgoing.get(initialNode));
 		changed.remove(initialNode);
 		
 		while(!changed.isEmpty()){
@@ -62,7 +64,7 @@ public class DataFlowAnalysis {
 			calculateIncoming(currentNode);
 			
 			Set<Expression> oldOutgoing = new HashSet<Expression>(this.outgoing.get(currentNode));
-			currentNode.applyStatement(this.incoming.get(currentNode), this.outgoing.get(currentNode), this.strategy);
+			this.strategy.applyStatement(currentNode, this.incoming.get(currentNode), this.outgoing.get(currentNode));
 
 			if(!this.outgoing.get(currentNode).equals(oldOutgoing)){
 				changed.addAll(this.strategy.getNodesToRecalculate(currentNode, this.graph));
@@ -102,10 +104,10 @@ public class DataFlowAnalysis {
 		String output = "<table>";
 		
 		for(Node node : sortedNodes){
-			output += "<tr><td>" + node.getId() + "</td><td>" + node.getStatement() + "</td><td>";
-			output += setToString(this.strategy.selectEntry(this.outgoing.get(node), this.incoming.get(node)));
+			output += "<tr><td>" + node.getId() + "</td><td>" + StringEscapeUtils.escapeHtml4(node.getStatement()) + "</td><td>";
+			output += StringEscapeUtils.escapeHtml4(setToString(this.strategy.selectEntry(this.outgoing.get(node), this.incoming.get(node))));
 			output += "</td><td>";
-			output += setToString(this.strategy.selectExit(this.outgoing.get(node), this.incoming.get(node)));
+			output += StringEscapeUtils.escapeHtml4(setToString(this.strategy.selectExit(this.outgoing.get(node), this.incoming.get(node))));
 			output += "</td></tr>";
 		}
 		
@@ -117,5 +119,4 @@ public class DataFlowAnalysis {
 		Iterator<Node> it = nodes.iterator();
 		return it.hasNext() ? it.next() : null;
 	}
-
 }

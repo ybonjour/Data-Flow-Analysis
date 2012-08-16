@@ -14,7 +14,7 @@ public class NodeTest {
 	
 	@Before
 	public void setUp(){
-			this.node = new ConditionalNode(1, new Operation(new Variable("a"), new Variable("b"), "=="));
+			this.node = new ConditionalNode(1, new Variable("a"), new Variable("b"), "==");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -25,7 +25,7 @@ public class NodeTest {
 	@Test
 	public void test_addChild_non_existing_child(){
 		//Arrange
-		ConditionalNode child = new ConditionalNode(2, new Operation(new Variable("a"), new Variable("b"), "=="));
+		ConditionalNode child = new ConditionalNode(2, new Variable("a"), new Variable("b"), "==");
 		
 		//Act
 		this.node.addChild(child);
@@ -37,7 +37,7 @@ public class NodeTest {
 	@Test
 	public void test_addChild_existing_child(){
 		//Arrange
-		ConditionalNode child = new ConditionalNode(2,new Operation(new Variable("a"), new Variable("b"), "=="));
+		ConditionalNode child = new ConditionalNode(2, new Variable("a"), new Variable("b"), "==");
 		this.node.addChild(child);
 		
 		//Act

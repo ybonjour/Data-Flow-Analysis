@@ -29,10 +29,10 @@ public class ControlflowGraph {
 		return node;		
 	}
 	
-	public ConditionalNode createConditionalNode(int id, Expression expression) throws Exception {
+	public ConditionalNode createConditionalNode(int id, Expression lhs, Expression rhs, String operation) throws Exception {
 		if(this.nodes.containsKey(id)) throw new Exception("Node already exists");
 		
-		ConditionalNode node = new ConditionalNode(id, expression);
+		ConditionalNode node = new ConditionalNode(id, lhs, rhs, operation);
 		this.nodes.put(id, node);
 		return node;
 	}

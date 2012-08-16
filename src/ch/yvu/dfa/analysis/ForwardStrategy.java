@@ -8,7 +8,7 @@ import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
 import ch.yvu.dfa.expressions.Expression;
 
-public abstract class ForwardStrategy implements AnalysisStrategy {
+public abstract class ForwardStrategy extends AnalysisStrategy {
 
 	@Override
 	public int getIdOfInitialNode(ControlflowGraph graph) throws Exception {
@@ -16,14 +16,12 @@ public abstract class ForwardStrategy implements AnalysisStrategy {
 	}
 	
 	@Override
-	public Set<Expression> selectEntry(Set<Expression> outgoing,
-			Set<Expression> incoming) {
+	public Set<Expression> selectEntry(Set<Expression> outgoing, Set<Expression> incoming) {
 		return incoming;
 	}
 
 	@Override
-	public Set<Expression> selectExit(Set<Expression> outgoing,
-			Set<Expression> incoming) {
+	public Set<Expression> selectExit(Set<Expression> outgoing, Set<Expression> incoming) {
 		return outgoing;
 	}
 

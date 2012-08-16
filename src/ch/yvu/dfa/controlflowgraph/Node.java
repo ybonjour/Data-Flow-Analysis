@@ -40,13 +40,6 @@ public abstract class Node implements Comparable<Node> {
 		return id;
 	}
 	
-	public void applyStatement(Set<Expression> incoming, Set<Expression> outgoing, AnalysisStrategy strategy){
-		outgoing.clear();
-		outgoing.addAll(incoming);
-		kill(outgoing, incoming, strategy);
-		gen(outgoing, incoming, strategy);
-	}
-	
 	public String toString(){
 		return  this.id + ": " + getStatement();
 	}
@@ -58,6 +51,5 @@ public abstract class Node implements Comparable<Node> {
 	
 	public abstract Expression getExpression();
 	public abstract String getStatement();
-	protected abstract void kill(Set<Expression> outgoing, Set<Expression> incoming,  AnalysisStrategy strategy);
-	protected abstract void gen(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy);
+	public abstract void applyStatement(Set<Expression> incoming, Set<Expression> outgoing, AnalysisStrategy strategy);
 }
