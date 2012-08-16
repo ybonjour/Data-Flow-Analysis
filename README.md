@@ -16,7 +16,7 @@ Available Data Flow Analysis
 Installation
 ----------------------------
 1. Download and compile the source
-2. Install Graph [Graphviz][graphviz]
+2. Install[Graphviz][graphviz]
 3. Adapt the paths in graphviz.properties
 
 [graphviz]:http://www.graphviz.org
