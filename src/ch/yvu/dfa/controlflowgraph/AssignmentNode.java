@@ -18,13 +18,9 @@ public class AssignmentNode extends Node {
 	}
 	
 	@Override
-	public void kill(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy){
-		strategy.kill(this, outgoing, incoming);
-	}
-	
-	@Override
-	public void gen(Set<Expression> outgoing, Set<Expression> incoming, AnalysisStrategy strategy){
-		strategy.gen(this, outgoing, incoming);
+	public void applyStatement(Set<Expression> incoming,
+			Set<Expression> outgoing, AnalysisStrategy strategy) {
+		strategy.applyStatement(this, incoming, outgoing);
 	}
 
 	@Override

@@ -25,31 +25,6 @@ public class LiveVariableStrategy extends BackwardStrategy {
 	}
 
 	@Override
-	public void kill(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
-		outgoing.remove(node.getLhs());
-	}
-
-	@Override
-	public void kill(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
-		//nothing to kill
-		
-	}
-
-	@Override
-	public void gen(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
-		for(Variable freeVariable : node.getFreeVariablesRhs()){
-			outgoing.add(freeVariable);
-		}
-	}
-
-	@Override
-	public void gen(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
-		for(Variable freeVariable : node.getFreeVariables()){
-			outgoing.add(freeVariable);
-		}
-	}
-
-	@Override
 	public void calculateIncoming(Node node, Set<Expression> incoming,
 			Map<Node, Set<Expression>> outgoing, ControlflowGraph graph) {
 		//Start with empty set
@@ -58,6 +33,45 @@ public class LiveVariableStrategy extends BackwardStrategy {
 		while(itChildren.hasNext()){
 			Node child = itChildren.next();
 			incoming.addAll(outgoing.get(child));
+		}
+	}
+	
+	@Override
+	public void applyStatement(AssignmentNode node, Set<Expression> incoming,
+			Set<Expression> outgoing) {
+		outgoing.clear();
+		outgoing.addAll(incoming);
+		kill(node, outgoing, incoming);
+		gen(node, outgoing, incoming);
+	}
+	
+	@Override
+	public void applyStatement(ConditionalNode node, Set<Expression> incoming,
+			Set<Expression> outgoing) {
+		outgoing.clear();
+		outgoing.addAll(incoming);
+		kill(node, outgoing, incoming);
+		gen(node, outgoing, incoming);	
+	}
+
+	private void kill(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+		outgoing.remove(node.getLhs());
+	}
+
+	private void kill(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+		//nothing to kill
+		
+	}
+
+	private void gen(AssignmentNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+		for(Variable freeVariable : node.getFreeVariablesRhs()){
+			outgoing.add(freeVariable);
+		}
+	}
+
+	private void gen(ConditionalNode node, Set<Expression> outgoing, Set<Expression> incoming) {
+		for(Variable freeVariable : node.getFreeVariables()){
+			outgoing.add(freeVariable);
 		}
 	}
 }

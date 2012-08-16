@@ -27,6 +27,8 @@ import ch.yvu.dfa.analysis.LiveVariableStrategy;
 import ch.yvu.dfa.analysis.ReachingDefinitionsStrategy;
 import ch.yvu.dfa.analysis.AnalysisStrategy;
 import ch.yvu.dfa.analysis.StronglyLiveVariableStrategy;
+import ch.yvu.dfa.analysis.ConstantPropagationStrategy;
+import ch.yvu.dfa.analysis.PreciseConstantPropagationStrategy;
 
 import ch.yvu.dfa.main.Worker;
 
@@ -123,11 +125,12 @@ public class MainFrame extends JFrame implements ActionListener {
 		this.strategies.put("Reaching Definitions", new ReachingDefinitionsStrategy());
 		this.strategies.put("Live Variable", new LiveVariableStrategy());
 		this.strategies.put("Strongly Live Variables", new StronglyLiveVariableStrategy());
+		this.strategies.put("Constant Propagation", new ConstantPropagationStrategy());
+		this.strategies.put("Precise Constant Propagation", new PreciseConstantPropagationStrategy());
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		//TODO: own thread
 		Worker worker = new Worker(this, this.input.getText(), this.strategies.get(this.strategyList.getSelectedItem()));
 		Thread t = new Thread(worker);
 		t.start();

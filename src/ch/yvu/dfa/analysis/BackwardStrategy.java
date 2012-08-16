@@ -6,7 +6,7 @@ import ch.yvu.dfa.controlflowgraph.ControlflowGraph;
 import ch.yvu.dfa.controlflowgraph.Node;
 import ch.yvu.dfa.expressions.Expression;
 
-public abstract class BackwardStrategy implements AnalysisStrategy {
+public abstract class BackwardStrategy extends AnalysisStrategy {
 
 	@Override
 	public int getIdOfInitialNode(ControlflowGraph graph) throws Exception {
